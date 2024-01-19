@@ -25,8 +25,11 @@ import kotlin.time.Duration.Companion.seconds
 fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(key1 = null){
         delay(2.seconds)
-        navController.navigate("home")
-    }
+        navController.navigate("home"){
+            popUpTo("splash_screen"){
+                inclusive = true
+            }
+        }    }
     Box(
         modifier = Modifier
             .fillMaxSize()
