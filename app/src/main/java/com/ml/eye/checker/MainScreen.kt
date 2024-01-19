@@ -1,6 +1,8 @@
 package com.ml.eye.checker
 
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -65,12 +67,12 @@ fun MainScreen() {
             }
         }
     val launcherGallery =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             MainScope().launch(Dispatchers.IO) {
-                bitmap = it?.toBitmap(context)
-                photo = it?.toBitmap(context)?.asImageBitmap()
-
-
+                photo = it.data?.data?.toBitmap(context)?.asImageBitmap()
+                bitmap = it.data?.data?.toBitmap(context)
+//                bitmap = it?.toBitmap(context)
+//                photo = it?.toBitmap(context)?.asImageBitmap()
             }
         }
 
@@ -93,7 +95,7 @@ fun MainScreen() {
                     .background(Color.Blue.copy(.1f))
                     .clickable {
                         launcherCam.launch()
-                        predictionInfo= Pair("","")
+                        predictionInfo = Pair("", "")
                     }
                     .padding(20.dp)
 
@@ -112,8 +114,12 @@ fun MainScreen() {
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color.Blue.copy(.1f))
                     .clickable {
-                        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        predictionInfo= Pair("","")
+                        val intent = Intent()
+                            .setType("image/*")
+                            .setAction(Intent.ACTION_GET_CONTENT)
+                        launcherGallery.launch(Intent.createChooser(intent,"Select a photo"))
+//                        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        predictionInfo = Pair("", "")
                     }
                     .padding(20.dp)
 
